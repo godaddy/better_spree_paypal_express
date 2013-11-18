@@ -6,10 +6,9 @@ module Spree
     preference :password, :string
     preference :signature, :string
     preference :seller_account_email, :string
-    preference :permission_refund, :string
     preference :server, :string, default: 'sandbox'
 
-    attr_accessible :preferred_login, :preferred_password, :preferred_signature, :preferred_seller_account_email, :preferred_permission_refund
+    attr_accessible :preferred_login, :preferred_password, :preferred_signature, :preferred_seller_account_email
 
     def supports?(source)
       true
@@ -23,7 +22,6 @@ module Spree
       ::PayPal::SDK.configure(
         :mode        => preferred_server.present? ? preferred_server : "sandbox",
         :subject     => preferred_seller_account_email.present? ? preferred_seller_account_email : nil,
-        :perm_refund => preferred_permission_refund.present? ? preferred_permission_refund : nil,
         :username    => preferred_login,
         :password    => preferred_password,
         :signature   => preferred_signature)
