@@ -26,8 +26,8 @@ describe Spree::Gateway::PayPalExpress do
           :OrderTotal => {
             :currencyID => "USD",
             :value => "10.00"
-          }
-        }))
+          }},
+          :payment_details => []))
 
       provider.should_receive(:get_express_checkout_details).
         with(pp_details_request).
@@ -53,9 +53,7 @@ describe Spree::Gateway::PayPalExpress do
 
     # Test for #4
     it "fails" do
-      # stub persist_invalid as it causes DatabaseCleaner.clean to go for a toss
-      payment.stub :persist_invalid => nil
-      response = double('pp_response', :success? => false, 
+      response = double('pp_response', :success? => false,
                           :errors => [double('pp_response_error', :long_message => "An error goes here.")])
       provider.should_receive(:do_express_checkout_payment).and_return(response)
       lambda { payment.purchase! }.should raise_error(Spree::Core::GatewayError, "An error goes here.")

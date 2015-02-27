@@ -1,5 +1,15 @@
 require 'spec_helper'
 
+module PayPal::SDK::Merchant::Urls
+  REDIRECT_ENDPOINTS = { :sandbox => "https://www.sandbox.paypal.com/webapps/xo/webflow/sparta/xoflow" }
+
+  def express_checkout_url(token, extra_params={})
+    token = token.Token if token.respond_to?(:Token)
+    params = {:token => token.to_s, :fallback => 1}
+    redirect_url(params.merge!(extra_params))
+  end
+end
+
 describe "PayPal", :js => true do
   let!(:product) { FactoryGirl.create(:product, :name => 'iPad') }
   before do
@@ -13,6 +23,7 @@ describe "PayPal", :js => true do
     })
     FactoryGirl.create(:shipping_method)
   end
+
   def fill_in_billing
     within("#billing") do
       fill_in "First Name", :with => "Test"
@@ -43,6 +54,12 @@ describe "PayPal", :js => true do
     Rails.logger.error "Errors IGNORED for this page - #{e.message}"
   end
 
+  def login_to_paypal
+    fill_in "email", :with => "pp@spreecommerce.com"
+    fill_in "password", :with => "thequickbrownfox"
+    click_button "Log in to PayPal"
+  end
+
   it "pays for an order successfully" do
     visit spree.root_path
     click_link 'iPad'
@@ -57,11 +74,8 @@ describe "PayPal", :js => true do
     # Delivery step doesn't require any action
     click_button "Save and Continue"
     find_and_click_paypal_button
-    switch_to_paypal_login
-    fill_in "login_email", :with => "pp@spreecommerce.com"
-    fill_in "login_password", :with => "thequickbrownfox"
-    click_button "Log In"
-    find("#continue_abovefold").click   # Because there's TWO continue buttons.
+    login_to_paypal
+    click_button "Pay Now"
     page.should have_content("Your order has been processed successfully")
 
     Spree::Payment.last.source.transaction_id.should_not be_blank
@@ -90,7 +104,9 @@ describe "PayPal", :js => true do
     # Delivery step doesn't require any action
     click_button "Save and Continue"
     find_and_click_paypal_button
-    within("#miniCart") do
+    login_to_paypal
+    find("#transactionCart").click
+    within(".transctionCartDetails") do
       page.should have_content("$5 off")
       page.should have_content("$10 on")
     end
@@ -102,7 +118,7 @@ describe "PayPal", :js => true do
       calculator = Spree::Calculator::FlatPercentItemTotal.new(preferred_flat_percent: 10)
       action = Spree::Promotion::Actions::CreateItemAdjustments.create(:calculator => calculator)
       promotion.actions << action
-    end    
+    end
 
     it "includes line item adjustments in PayPal summary" do
 
@@ -126,8 +142,9 @@ describe "PayPal", :js => true do
       click_button "Save and Continue"
       # Delivery step doesn't require any action
       click_button "Save and Continue"
-      find("#paypal_button").click
-      within("#miniCart") do
+      find_and_click_paypal_button
+      find("#transactionCart").click
+      within(".transctionCartDetails") do
         page.should have_content("10% off")
       end
     end
@@ -159,7 +176,8 @@ describe "PayPal", :js => true do
       # Delivery step doesn't require any action
       click_button "Save and Continue"
       find_and_click_paypal_button
-      within("#miniCart") do
+      find("#transactionCart").click
+      within(".transctionCartDetails") do
         page.should have_content('iPad')
         page.should_not have_content('iPod')
       end
@@ -191,8 +209,8 @@ describe "PayPal", :js => true do
       # Delivery step doesn't require any action
       click_button "Save and Continue"
       find_and_click_paypal_button
-      within("#miniCart") do
-        page.should have_content('Current purchase')
+      within("#transactionCart") do
+        page.should have_content('$10.00')
       end
     end
   end
@@ -239,11 +257,8 @@ describe "PayPal", :js => true do
         # Delivery step doesn't require any action
         click_button "Save and Continue"
         find_and_click_paypal_button
-        switch_to_paypal_login
-        fill_in "login_email", :with => "pp@spreecommerce.com"
-        fill_in "login_password", :with => "thequickbrownfox"
-        click_button "Log In"
-        find("#continue_abovefold").click   # Because there's TWO continue buttons.
+        login_to_paypal
+        click_button "Pay Now"
         using_wait_time(30.seconds) do
           page.should have_content("Your order has been processed successfully")
         end
