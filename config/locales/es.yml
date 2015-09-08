@@ -1,0 +1,23 @@
+---
+es:
+  spree:
+    seller_account_email: "Correo electrónico de la cuenta del vendedor (correo electrónico del vendedor cuando usa credenciales de terceros, en caso contrario dejar en blanco)"
+    paypal:
+      already_refunded: "Este pago ya se reembolsó y no es necesario hacer nada más."
+      no_payment_via_admin_backend: "En este momento no puedes cobrar a las cuentas de PayPal a través del sistema secundario del administrador."
+      transaction: "Transacción de PayPal"
+      payer_id: "Id. de la persona que paga"
+      transaction_id: "ID de Transacción"
+      token: "Token"
+      refund: "Reembolso"
+      refund_amount: "Monto"
+      order_not_completed: "No pudimos procesar el pago. Intenta nuevamente o ponte en contacto si vuelves a tener este problema."
+      original_amount: "Monto original: %{amount}"
+      refund_successful: "El reembolso de PayPal se realizó correctamente"
+      refund_unsuccessful: "Ocurrió un error con el reembolso de PayPal"
+      actions:
+        refund: "Reembolso"
+      flash:
+        cancel: "¿No deseas utilizar PayPal? No hay problema."
+        connection_failed: "No pudimos conectarnos a PayPal."
+        generic_error: "Error en PayPal. %{reasons}"
