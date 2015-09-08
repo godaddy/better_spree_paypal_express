@@ -16,6 +16,7 @@ group :test do
   gem 'sqlite3'
   gem 'byebug'
   gem 'launchy'
+  gem 'test-unit'
 end
 
 gemspec
