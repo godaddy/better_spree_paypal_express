@@ -24,8 +24,8 @@ describe Spree::Gateway::PayPalExpress do
           :OrderTotal => {
             :currencyID => "USD",
             :value => "10.00"
-          }
-        }))
+          },
+        }, :payment_details => []))
 
       provider.should_receive(:get_express_checkout_details).
         with(pp_details_request).
