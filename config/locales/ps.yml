@@ -1,0 +1,23 @@
+---
+ps:
+  spree:
+    seller_account_email: "[Séllér Åccòünt Émåîl (Séllér émåîl whén üsîng 3rd pårty crédéntîåls, òthérwîsé léåvé blånk) !!! !!! !!! !!! !!! !!! !!! !!!]"
+    paypal:
+      already_refunded: "[Thîs påymént hås béén réfündéd ånd nò fürthér åctîòn cån bé tåkén òn ît. !!! !!! !!! !!! !!! !!!]"
+      no_payment_via_admin_backend: "[Yòü cånnòt chårgé PåyPål åccòünts thròügh thé ådmîn båckénd åt thîs tîmé. !!! !!! !!! !!! !!! !!!]"
+      transaction: "[PåyPål Trånsåctîòn !!! !!!]"
+      payer_id: "[Påyér ÎD !!! !!! !!! !!! !!! !!! !!! !!!]"
+      transaction_id: "[Trånsåctîòn ÎD !!!]"
+      token: "[Tòkén !!! !!! !!! !!! !!!]"
+      refund: "[Réfünd !!! !!! !!! !!! !!! !!!]"
+      refund_amount: "[Åmòünt !!! !!! !!! !!! !!! !!!]"
+      order_not_completed: "[Wé còüldn't pròcéss yòür påymént. Pléåsé try ågåîn òr còntåct üs îf yòü còntînüé tò éxpérîéncé îssüés. !!! !!! !!! !!! !!! !!! !!! !!! !!!]"
+      original_amount: "[Òrîgînål åmòünt:  !!! !!!]%{amount}"
+      refund_successful: "[PåyPål réfünd süccéssfül !!! !!!]"
+      refund_unsuccessful: "[PåyPål réfünd ünsüccéssfül !!! !!!]"
+      actions:
+        refund: "[Réfünd !!! !!! !!! !!! !!! !!!]"
+      flash:
+        cancel: "[Dòn't wånt tò üsé PåyPål? Nò pròbléms. !!! !!! !!!]"
+        connection_failed: "[Còüld nòt cònnéct tò PåyPål. !!! !!! !!!]"
+        generic_error: "[PåyPål fåîléd.  !!! !!!]%{reasons}"

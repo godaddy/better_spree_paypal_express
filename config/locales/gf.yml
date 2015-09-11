@@ -1,0 +1,23 @@
+---
+gf:
+  spree:
+    seller_account_email: "⌠515232⌡Séllér Åccòünt Émåîl (Séllér émåîl whén üsîng 3rd pårty crédéntîåls, òthérwîsé léåvé blånk)⌠515232⌡"
+    paypal:
+      already_refunded: "⌠515233⌡Thîs påymént hås béén réfündéd ånd nò fürthér åctîòn cån bé tåkén òn ît.⌠515233⌡"
+      no_payment_via_admin_backend: "⌠515234⌡Yòü cånnòt chårgé PåyPål åccòünts thròügh thé ådmîn båckénd åt thîs tîmé.⌠515234⌡"
+      transaction: "⌠515235⌡PåyPål Trånsåctîòn⌠515235⌡"
+      payer_id: "⌠515236⌡Påyér ÎD⌠515236⌡"
+      transaction_id: "⌠515237⌡Trånsåctîòn ÎD⌠515237⌡"
+      token: "⌠515238⌡Tòkén⌠515238⌡"
+      refund: "⌠515239⌡Réfünd⌠515239⌡"
+      refund_amount: "⌠515240⌡Åmòünt⌠515240⌡"
+      order_not_completed: "⌠515241⌡Wé còüldn't pròcéss yòür påymént. Pléåsé try ågåîn òr còntåct üs îf yòü còntînüé tò éxpérîéncé îssüés.⌠515241⌡"
+      original_amount: "⌠515242⌡Òrîgînål åmòünt: %{amount}⌠515242⌡"
+      refund_successful: "⌠515243⌡PåyPål réfünd süccéssfül⌠515243⌡"
+      refund_unsuccessful: "⌠515244⌡PåyPål réfünd ünsüccéssfül⌠515244⌡"
+      actions:
+        refund: "⌠515245⌡Réfünd⌠515245⌡"
+      flash:
+        cancel: "⌠515246⌡Dòn't wånt tò üsé PåyPål? Nò pròbléms.⌠515246⌡"
+        connection_failed: "⌠515247⌡Còüld nòt cònnéct tò PåyPål.⌠515247⌡"
+        generic_error: "⌠515248⌡PåyPål fåîléd. %{reasons}⌠515248⌡"
