@@ -73,9 +73,6 @@ module Spree
         # This is rather hackish, required for payment/processing handle_response code.
         class << pp_response
           def authorization; nil; end
-          def to_s
-            do_express_checkout_payment_response_details
-          end
         end
       else
         class << pp_response
