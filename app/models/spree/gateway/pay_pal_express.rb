@@ -71,18 +71,20 @@ module Spree
         transaction_id = pp_response.do_express_checkout_payment_response_details.payment_info.first.transaction_id
         express_checkout.update_column(:transaction_id, transaction_id)
         # This is rather hackish, required for payment/processing handle_response code.
-        Class.new do
-          def success?; true; end
+        class << pp_response
           def authorization; nil; end
-        end.new
+          def to_s
+            do_express_checkout_payment_response_details
+          end
+        end
       else
         class << pp_response
           def to_s
             errors.map(&:long_message).join(" ")
           end
         end
-        pp_response
       end
+      pp_response
     end
 
     def refund(payment, amount)
