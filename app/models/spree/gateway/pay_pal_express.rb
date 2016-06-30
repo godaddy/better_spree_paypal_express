@@ -11,6 +11,8 @@ module Spree
     preference :landing_page, :string, default: 'Billing'
     preference :logourl, :string, default: ''
 
+    cattr_accessor :button_source
+
     def supports?(source)
       true
     end
@@ -60,7 +62,10 @@ module Spree
           :PaymentAction => "Sale",
           :Token => express_checkout.token,
           :PayerID => express_checkout.payer_id,
-          :PaymentDetails => pp_details_response.get_express_checkout_details_response_details.PaymentDetails
+          :PaymentDetails => pp_details_response.get_express_checkout_details_response_details.PaymentDetails,
+          # set ButtonSource for partner indicator: https://www.paypal-marketing.com/emarketing/partner/na/portal/integrate_bn_codes.html#ec
+          # if not set, ButtonSource defaults to "PayPal_SDK" in the PayPal SDK library
+          :ButtonSource => button_source
         }
       })
 
