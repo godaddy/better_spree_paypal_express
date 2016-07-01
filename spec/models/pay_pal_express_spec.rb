@@ -1,62 +1,99 @@
 describe Spree::Gateway::PayPalExpress do
+
   let(:gateway) { Spree::Gateway::PayPalExpress.create!(name: "PayPalExpress", :environment => Rails.env) }
 
   context "payment purchase" do
+
+    let(:bn_code) { nil }
+    let(:token) { "fake_token" }
+    let(:currency_id) { "USD" }
+    let(:payment_action) { "Sale" }
+    let(:payer_id) { "fake_payer_id" }
+    let(:order_value) { "10.00" }
+    let(:transaction_id) { "12345" }
+
     let(:payment) do
       payment = FactoryGirl.create(:payment, :payment_method => gateway, :amount => 10)
-      payment.stub :source => mock_model(Spree::PaypalExpressCheckout, :token => 'fake_token', :payer_id => 'fake_payer_id', :update_column => true)
+      allow(payment).to receive(:source).and_return(mock_model(Spree::PaypalExpressCheckout, :token => token, :payer_id => payer_id, :update_column => true))
       payment
     end
 
     let(:provider) do
       provider = double('Provider')
-      gateway.stub(:provider => provider)
+      allow(gateway).to receive(:provider).and_return(provider)
       provider
     end
 
+    let(:pp_details_request) { double }
+
     before do
-      provider.should_receive(:build_get_express_checkout_details).with({
-        :Token => 'fake_token'
-      }).and_return(pp_details_request = double)
+      expect(provider).to receive(:build_get_express_checkout_details).
+          with({ Token: token }).
+          and_return(pp_details_request)
 
       pp_details_response = double(:get_express_checkout_details_response_details =>
         double(:PaymentDetails => {
-          :OrderTotal => {
-            :currencyID => "USD",
-            :value => "10.00"
+          OrderTotal: {
+            currencyID: currency_id,
+            value: order_value
           },
-        }, :payment_details => []))
+        }, payment_details: []))
 
-      provider.should_receive(:get_express_checkout_details).
+      expect(provider).to receive(:get_express_checkout_details).
         with(pp_details_request).
         and_return(pp_details_response)
 
-      provider.should_receive(:build_do_express_checkout_payment).with({
+      expect(provider).to receive(:build_do_express_checkout_payment).with({
         :DoExpressCheckoutPaymentRequestDetails => {
-          :PaymentAction => "Sale",
-          :Token => "fake_token",
-          :PayerID => "fake_payer_id",
-          :PaymentDetails => pp_details_response.get_express_checkout_details_response_details.PaymentDetails
+          PaymentAction: payment_action,
+          Token: token,
+          PayerID: payer_id,
+          PaymentDetails: pp_details_response.get_express_checkout_details_response_details.PaymentDetails,
+          ButtonSource: bn_code
         }
       })
     end
 
     # Test for #11
-    it "succeeds" do
-      response = double('pp_response', :success? => true)
-      response.stub_chain("do_express_checkout_payment_response_details.payment_info.first.transaction_id").and_return '12345'
-      provider.should_receive(:do_express_checkout_payment).and_return(response)
-      lambda { payment.purchase! }.should_not raise_error
+    context "payment succeeds" do
+
+      before do
+        response = double('pp_response', :success? => true)
+        response.stub_chain("do_express_checkout_payment_response_details.payment_info.first.transaction_id").and_return transaction_id
+        allow(provider).to receive(:do_express_checkout_payment).and_return(response)
+      end
+
+      it "completes without error" do
+        expect { payment.purchase! }.to_not raise_error
+      end
+
+      context "with button source defined" do
+
+        let(:bn_code) { "TEST BN CODE" }
+
+        before { Spree::Gateway::PayPalExpress.button_source = bn_code }
+
+        after { Spree::Gateway::PayPalExpress.button_source = nil }
+
+        it "sets ButtonSource to configured BN Code" do
+          payment.purchase!
+        end
+
+      end
+
     end
 
-    # Test for #4
-    it "fails" do
-      # stub persist_invalid as it causes DatabaseCleaner.clean to go for a toss
-      payment.stub :persist_invalid => nil
-      response = double('pp_response', :success? => false, 
-                          :errors => [double('pp_response_error', :long_message => "An error goes here.")])
-      provider.should_receive(:do_express_checkout_payment).and_return(response)
-      lambda { payment.purchase! }.should raise_error(Spree::Core::GatewayError, "An error goes here.")
+    context "payment fails" do
+
+      it "raises GatewayError" do
+        # stub persist_invalid as it causes DatabaseCleaner.clean to go for a toss
+        allow(payment).to receive(:persist_invalid).and_return(nil)
+        response = double('pp_response', :success? => false, :errors => [double('pp_response_error', :long_message => "An error goes here.")])
+        expect(provider).to receive(:do_express_checkout_payment).and_return(response)
+        expect { payment.purchase! }.to raise_error(Spree::Core::GatewayError, "An error goes here.")
+      end
+
     end
+
   end
 end
