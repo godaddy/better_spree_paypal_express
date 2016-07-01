@@ -85,11 +85,14 @@ describe Spree::Gateway::PayPalExpress do
 
     context "payment fails" do
 
-      it "raises GatewayError" do
+      before do
         # stub persist_invalid as it causes DatabaseCleaner.clean to go for a toss
         allow(payment).to receive(:persist_invalid).and_return(nil)
         response = double('pp_response', :success? => false, :errors => [double('pp_response_error', :long_message => "An error goes here.")])
         expect(provider).to receive(:do_express_checkout_payment).and_return(response)
+      end
+
+      it "raises GatewayError" do
         expect { payment.purchase! }.to raise_error(Spree::Core::GatewayError, "An error goes here.")
       end
 
