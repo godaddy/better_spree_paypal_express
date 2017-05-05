@@ -55,6 +55,7 @@ module Spree
       # We usually only have 1 payment, but payment_details is an array, so nil the pay_pal_account_id for all payments
       pp_details_response.get_express_checkout_details_response_details.payment_details.each do |payment|
         payment.seller_details.pay_pal_account_id = nil
+        payment.button_source = 'GoDaddy_online'
       end
 
       pp_request = provider.build_do_express_checkout_payment({
