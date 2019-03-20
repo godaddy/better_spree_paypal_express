@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if ENV["COVERAGE"]
   require_relative 'rcov_exclude_list.rb'
   exlist = Dir.glob(@exclude_list)
@@ -34,6 +36,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.color = true
   config.use_transactional_fixtures = true
+  config.disable_monkey_patching!
 
   config.fail_fast = ENV['FAIL_FAST'] || false
 end

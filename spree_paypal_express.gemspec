@@ -25,9 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'spree_core', '~> 3.0.0'
   s.add_dependency 'paypal-sdk-merchant', '1.106.1'
 
-  s.add_development_dependency 'capybara', '~> 2.1'
-  s.add_development_dependency 'coffee-rails'
-  s.add_development_dependency 'factory_bot'
+  s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'simplecov'

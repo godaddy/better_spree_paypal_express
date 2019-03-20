@@ -1,9 +1,9 @@
-describe Spree::Gateway::PayPalExpress do
+# frozen_string_literal: true
 
-  let(:gateway) { Spree::Gateway::PayPalExpress.create!(name: "PayPalExpress", :environment => Rails.env) }
+RSpec.describe Spree::Gateway::PayPalExpress do
+  let(:gateway) { Spree::Gateway::PayPalExpress.create!(name: "PayPalExpress", environment: Rails.env) }
 
   context "payment purchase" do
-
     let(:bn_code) { nil }
     let(:token) { "fake_token" }
     let(:currency_id) { "USD" }
@@ -11,19 +11,25 @@ describe Spree::Gateway::PayPalExpress do
     let(:payer_id) { "fake_payer_id" }
     let(:order_value) { "10.00" }
     let(:transaction_id) { "12345" }
-
+    let(:mock_ppe_checkout) do
+      instance_double(
+        'Spree::PaypalExpressCheckout',
+        token: token,
+        payer_id: payer_id,
+        update_column: true,
+        valid?: true
+      )
+    end
     let(:payment) do
-      payment = FactoryGirl.create(:payment, :payment_method => gateway, :amount => 10)
-      allow(payment).to receive(:source).and_return(mock_model(Spree::PaypalExpressCheckout, :token => token, :payer_id => payer_id, :update_column => true))
+      payment = FactoryBot.create(:payment, payment_method: gateway, amount: 10)
+      allow(payment).to receive(:source).and_return(mock_ppe_checkout)
       payment
     end
-
     let(:provider) do
       provider = double('Provider')
       allow(gateway).to receive(:provider).and_return(provider)
       provider
     end
-
     let(:pp_details_request) { double }
 
     before do
@@ -31,8 +37,8 @@ describe Spree::Gateway::PayPalExpress do
           with({ Token: token }).
           and_return(pp_details_request)
 
-      pp_details_response = double(:get_express_checkout_details_response_details =>
-        double(:PaymentDetails => {
+      pp_details_response = double(get_express_checkout_details_response_details:
+        double(PaymentDetails: {
           OrderTotal: {
             currencyID: currency_id,
             value: order_value
@@ -44,7 +50,7 @@ describe Spree::Gateway::PayPalExpress do
         and_return(pp_details_response)
 
       expect(provider).to receive(:build_do_express_checkout_payment).with({
-        :DoExpressCheckoutPaymentRequestDetails => {
+        DoExpressCheckoutPaymentRequestDetails: {
           PaymentAction: payment_action,
           Token: token,
           PayerID: payer_id,
@@ -56,10 +62,11 @@ describe Spree::Gateway::PayPalExpress do
 
     # Test for #11
     context "payment succeeds" do
-
       before do
-        response = double('pp_response', :success? => true)
-        response.stub_chain("do_express_checkout_payment_response_details.payment_info.first.transaction_id").and_return transaction_id
+        response = double('pp_response', success?: true)
+        allow(response)
+          .to receive_message_chain(:do_express_checkout_payment_response_details, :payment_info, :first, :transaction_id)
+          .and_return transaction_id
         allow(provider).to receive(:do_express_checkout_payment).and_return(response)
       end
 
@@ -68,32 +75,24 @@ describe Spree::Gateway::PayPalExpress do
       end
 
       context "with button source defined" do
-
         let(:bn_code) { "TEST BN CODE" }
-
         before { Spree::Gateway::PayPalExpress.button_source = bn_code }
-
         after { Spree::Gateway::PayPalExpress.button_source = nil }
 
         it "sets ButtonSource to configured BN Code" do
           payment.purchase!
         end
-
       end
-
     end
 
     context "payment fails" do
-
       it "raises GatewayError" do
         # stub persist_invalid as it causes DatabaseCleaner.clean to go for a toss
         allow(payment).to receive(:persist_invalid).and_return(nil)
-        response = double('pp_response', :success? => false, :errors => [double('pp_response_error', :long_message => "An error goes here.")])
+        response = double('pp_response', success?: false, errors: [double('pp_response_error', long_message: "An error goes here.")])
         expect(provider).to receive(:do_express_checkout_payment).and_return(response)
         expect { payment.purchase! }.to raise_error(Spree::Core::GatewayError, "An error goes here.")
       end
-
     end
-
   end
 end

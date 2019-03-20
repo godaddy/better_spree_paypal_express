@@ -12,3 +12,4 @@ spec/dummy
 .idea
 .ruby-version
 .ruby-gemset
+.byebug_history

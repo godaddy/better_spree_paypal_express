@@ -5,7 +5,7 @@ gem 'spree_auth_devise', git: 'https://github.com/godaddy/spree_auth_devise', br
 
 gemspec
 
-group :test do
+group :test, :development do
   gem 'simplecov-rcov'
   gem 'yarjuf'
   gem 'require_all'

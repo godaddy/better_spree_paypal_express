@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Spree::Admin::PaymentsController.class_eval do
   def paypal_refund
     if request.get?

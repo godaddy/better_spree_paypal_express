@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Spree
   class Admin::PaypalPaymentsController < Spree::Admin::BaseController
     before_filter :load_order
@@ -8,8 +10,8 @@ module Spree
 
     private
 
-    def load_order
-      @order = Spree::Order.where(:number => params[:order_id]).first
-    end
+      def load_order
+        @order = Spree::Order.where(:number => params[:order_id]).first
+      end
   end
 end
