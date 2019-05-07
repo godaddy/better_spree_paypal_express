@@ -1,6 +1,4 @@
-# coding: utf-8
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+$:.push File.expand_path("../lib", __FILE__)
 
 require 'spree_paypal_express/version'
 
@@ -15,9 +13,9 @@ Gem::Specification.new do |s|
   s.author       = 'Spree Commerce'
   s.email        = 'gems@spreecommerce.com'
   s.homepage     = 'http://www.spreecommerce.com'
-  s.license      = %q{BSD-3}
+  s.license      = 'BSD-3'
 
-  s.files        = `git ls-files`.split("\n")
+  s.files        = Dir["{app,config,db,lib}/**/*", "Rakefile", "README.md"]
   s.test_files   = `git ls-files -- spec/*`.split("\n")
   s.require_path = 'lib'
   s.requirements << 'none'

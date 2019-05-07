@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require 'spree_core'
+require 'spree_backend'
+
 module SpreePaypalExpress
   class Engine < Rails::Engine
-    require 'spree/core'
     isolate_namespace Spree
     engine_name 'spree_paypal_express'
 

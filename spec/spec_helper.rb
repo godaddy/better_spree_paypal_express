@@ -6,11 +6,7 @@ if ENV["COVERAGE"]
   require 'simplecov'
   require 'simplecov-rcov'
   SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-  SimpleCov.start do
-    exlist.each do |p|
-      add_filter p
-    end
-  end
+  SimpleCov.start('rails') { add_filter(exlist) }
 end
 
 # Configure Rails Environment
