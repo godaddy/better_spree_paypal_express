@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.homepage     = 'http://www.spreecommerce.com'
   s.license      = 'BSD-3'
 
-  s.files        = Dir["{app,config,db,lib}/**/*", "Rakefile", "README.md"]
-  s.test_files   = `git ls-files -- spec/*`.split('\n')
+  s.files        = Dir["{app,config,db,lib}/**/*", 'Rakefile', 'README.md']
+  s.test_files   = `git ls-files -- spec/*`.split("\n")
   s.require_path = 'lib'
   s.requirements << 'none'
 
