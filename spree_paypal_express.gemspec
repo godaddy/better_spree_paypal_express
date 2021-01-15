@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 3.0.0'
-  s.add_dependency 'paypal-sdk-merchant', '1.106.1'
+  s.add_dependency 'paypal-sdk-merchant', '~> 1.117.1'
 
   s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'ffaker'
